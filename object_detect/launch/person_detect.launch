@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="max_rate"  default="5"/>
+  <arg name="scale"     default="0.5"/>
+  <arg name="image"     default="/realsense/color/image_raw"/>
+  <arg name="transport" default="raw"/>
+
+  <node name="object_detect_node" pkg="object_detect" type="object_detect_node" output="screen">
+    <param name="image" value="$(arg image)"/>
+    <param name="rate"  value="$(arg max_rate)"/>
+    <param name="scale" value="$(arg scale)"/>
+    <param name="transport" value="$(arg transport)"/>
+  </node>
+
+</launch>
