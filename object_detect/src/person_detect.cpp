@@ -19,7 +19,7 @@
 
 // Std C++ headers
 #include <vector>
-#include <person_detect.h>
+// #include <person_detect.h> 
 
 class PersonDetector
 {
@@ -45,12 +45,7 @@ protected:
 
   void publishDetections(const std::vector<cv::Rect>& detections) const;
 
-  void publishDebugImage(cv::Mat& img,
-                         const std::vector<cv::Rect>& detections) const;
-
-
   double _imageScaling;
-  mutable cv_bridge::CvImage _cvImgDebug;
 
   boost::scoped_ptr<cv::HOGDescriptor> _hogCPU;
 
@@ -59,7 +54,6 @@ protected:
   ros::Time _imgTimeStamp;
 
   ros::Publisher _detectionPub;
-  image_transport::Publisher _imDebugPub;
 
 };
 
@@ -82,7 +76,6 @@ PersonDetector::PersonDetector(ros::NodeHandle& nh,
   image_transport::TransportHints transportHint(transport);
 
   _imageSub   = _imageTransport.subscribe(topic, 1, &PersonDetector::imageCallback, this, transportHint);
-  _imDebugPub = _privateImageTransport.advertise("debug", 1);
 
   _detectionPub = _pnh.advertise<object_recognition_msgs::RecognizedObject>("results", 1);
 
@@ -124,10 +117,6 @@ void PersonDetector::imageCallback(const sensor_msgs::ImageConstPtr& msg)
   }
 
   publishDetections(detections);
-
-  cv::Mat imDebug = cvImgPtr->image.clone();
-
-  publishDebugImage(imDebug, detections);
 }
 
 void PersonDetector::scaleDetections(std::vector<cv::Rect>& detections,
@@ -165,50 +154,18 @@ void PersonDetector::detectPersons(const cv::Mat& img,
 void PersonDetector::publishDetections(const std::vector<cv::Rect>& detections) const
 {
   object_recognition_msgs::RecognizedObject msg;
-  object_recognition_msgs::RecognizedObject detection;
-
-  msg.header.frame_id = "";
-  msg.header.stamp    = _imgTimeStamp;
 
   BOOST_FOREACH(const cv::Rect& roi, detections)
   {
-    detection.bounding_contours[0].x      = roi.x;
-    detection.bounding_contours[0].y      = roi.y;
-    // detection.width  = roi.width;
-    // detection.height = roi.height;
-    msg.bounding_contours[0].x      = roi.x;
-    msg.bounding_contours[0].y      = roi.y;
+    msg.header.frame_id = "";
+    msg.header.stamp    = _imgTimeStamp;
 
-    // msg.bounding_contours.push_back(detection.bounding_contours);
+    msg.type.key = "human";
   }
 
   _detectionPub.publish(msg);
 }
 
-void PersonDetector::publishDebugImage(cv::Mat& img,
-                                       const std::vector<cv::Rect>& detections) const
-{
-  //draw detections
-  BOOST_FOREACH(const cv::Rect& roi, detections)
-  {
-    cv::rectangle(img, roi, CV_RGB(0,255,0), 2);
-  }
-
-  if ( img.channels() == 3 && img.depth() == CV_8U )
-    _cvImgDebug.encoding = sensor_msgs::image_encodings::BGR8;
-
-  else if ( img.channels() == 1 && img.depth() == CV_8U )
-    _cvImgDebug.encoding = sensor_msgs::image_encodings::MONO8;
-  else
-    throw std::runtime_error("Error in Detector2dNode::publishDebug: only 24-bit BGR or 8-bit MONO images are currently supported");
-
-  _cvImgDebug.image = img;
-  sensor_msgs::Image imgMsg;
-  imgMsg.header.stamp = _imgTimeStamp;
-  _cvImgDebug.toImageMsg(imgMsg); //copy image data to ROS message
-
-  _imDebugPub.publish(imgMsg);
-}
 
 int main(int argc, char **argv) 
 {
