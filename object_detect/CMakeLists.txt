@@ -13,6 +13,8 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  sensor_msgs
+  pcl_ros
 )
 
 find_package(OpenCV REQUIRED)
@@ -108,7 +110,7 @@ find_package(OpenCV REQUIRED)
 catkin_package(
   INCLUDE_DIRS include
 #  LIBRARIES object_detect
-  CATKIN_DEPENDS roscpp rospy std_msgs image_transport cv_bridge
+  CATKIN_DEPENDS roscpp rospy std_msgs sensor_msgs image_transport cv_bridge pcl_ros
 #  DEPENDS system_lib
 )
 
@@ -120,7 +122,7 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
  include
-  ${catkin_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS}
+  ${catkin_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS} ${PCL_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -153,6 +155,7 @@ add_executable(${PROJECT_NAME}_node src/person_detect.cpp)
  target_link_libraries(${PROJECT_NAME}_node
    ${catkin_LIBRARIES}
    ${OpenCV_LIBRARIES}
+   ${PCL_LIBRARIES}
 )
 
 #############
