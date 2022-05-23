@@ -1,5 +1,3 @@
-
-// ROS headers
 #include <ros/ros.h>
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
@@ -201,11 +199,11 @@ void PCLdetect::detection()
     _detectionPub.publish(msg);
 }
 
-
-
 int main(int argc, char **argv) 
 {
-  ros::init(argc,argv,"object_detect_node"); // Create and name the Node
+  ros::init(argc,argv,"person_detect_node"); // Create and name the Node
+
+>>>>>>> b4a3d579a0d9d7a3091b28f69f8cf345e457334d
   ros::NodeHandle nh, pnh("~");
 
   ros::CallbackQueue cbQueue;
@@ -225,6 +223,7 @@ int main(int argc, char **argv)
   std::string topic_pcl = "/velodyne_points";
   pnh.param<std::string>("image", topic_img, topic_img);
   pnh.param<std::string>("pcl", topic_pcl, topic_pcl);
+>>>>>>> b4a3d579a0d9d7a3091b28f69f8cf345e457334d
 
   ROS_INFO_STREAM("Setting image scale factor to: " << scale);
   ROS_INFO_STREAM("Setting detector max rate to:  " << freq);
