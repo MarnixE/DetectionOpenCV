@@ -1,14 +1,9 @@
-<<<<<<< HEAD
-// Person detect includes
-=======
-// ROS headers
->>>>>>> parent of 124f919... added pcl closest point detection
 #include <ros/ros.h>
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
 #include <ros/callback_queue.h>
 #include <sensor_msgs/Image.h>
-<<<<<<< HEAD
+
 #include <object_recognition_msgs/RecognizedObject.h>
 #include <boost/scoped_ptr.hpp>
 #include <boost/foreach.hpp>
@@ -211,6 +206,8 @@ int main(int argc, char **argv)
 {
   ros::init(argc,argv,"object_detect_node"); // Create and name the Node
 =======
+=======
+>>>>>>> parent of 124f919 (added pcl closest point detection)
 #include <image_transport/image_transport.h>
 #include <object_recognition_msgs/RecognizedObject.h>
 // #include <object_recognition_msgs/ObjectType.h>
@@ -233,7 +230,7 @@ int main(int argc, char **argv)
 int main(int argc, char **argv) 
 {
   ros::init(argc,argv,"person_detect_node"); // Create and name the Node
->>>>>>> parent of 124f919... added pcl closest point detection
+
   ros::NodeHandle nh, pnh("~");
 
   ros::CallbackQueue cbQueue;
@@ -248,16 +245,18 @@ int main(int argc, char **argv)
   std::string imTransport = "raw";
   pnh.param<std::string>("transport",   imTransport,    imTransport);
 
-<<<<<<< HEAD
   // Creating topics to publish
   std::string topic_img = "/realsense/color/image_raw";
   std::string topic_pcl = "/velodyne_points";
   pnh.param<std::string>("image", topic_img, topic_img);
   pnh.param<std::string>("pcl", topic_pcl, topic_pcl);
-=======
+
   std::string topic = "/realsense/color/image_raw";
   pnh.param<std::string>("image", topic, topic);
->>>>>>> parent of 124f919... added pcl closest point detection
+
+  std::string topic = "/realsense/color/image_raw";
+  pnh.param<std::string>("image", topic, topic);
+>>>>>>> parent of 124f919 (added pcl closest point detection)
 
   ROS_INFO_STREAM("Setting image scale factor to: " << scale);
   ROS_INFO_STREAM("Setting detector max rate to:  " << freq);
@@ -266,12 +265,12 @@ int main(int argc, char **argv)
 
   ROS_INFO_STREAM("Creating person detector ...");
 
-<<<<<<< HEAD
   PersonDetector ImgDetector(nh, pnh, scale, topic_img, imTransport);
   PCLdetect PCLDetector(nh, pnh, topic_pcl);
-=======
+
   PersonDetector detector(nh, pnh, scale, topic, imTransport);
->>>>>>> parent of 124f919... added pcl closest point detection
+
+  PersonDetector detector(nh, pnh, scale, topic, imTransport);
 
   ROS_INFO_STREAM("Spinning to serve callbacks ...");
 
